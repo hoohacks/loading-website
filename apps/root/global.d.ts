@@ -10,7 +10,7 @@ declare module 'navigation/footer' {
   export function unmount(): Promise<void>;
 }
 
-declare module 'content/landing' {
+declare module 'content' {
   export function bootstrap(): Promise<void>;
   export function mount(): Promise<void>;
   export function unmount(): Promise<void>;
