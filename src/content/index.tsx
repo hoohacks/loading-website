@@ -1,10 +1,15 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
 
 function Landing(): React.JSX.Element {
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
       {/* Main Content */}
       <main className="flex-1">
         {/* Hero Section */}
@@ -131,7 +136,7 @@ function Landing(): React.JSX.Element {
           </div>
         </section>
       </main>
-    </>
+    </motion.div>
   );
 }
 
