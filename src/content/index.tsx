@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
 
@@ -29,7 +29,11 @@ function Landing(): React.JSX.Element {
                     width="550"
                   />
                   <p className="text-muted-foreground md:text-xl font-mono w-full">
+                    // March 21-22, 2026 | University of Virginia
+                    <br />
                     // theme loading_
+                  </p>
+                  <p>
                   </p>
                 </div>
               </div>
