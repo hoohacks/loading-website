@@ -128,13 +128,13 @@ function Landing(): React.JSX.Element {
                 </p>
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                Stay tuned!
-                {/* <button
+                {/* Stay tuned! */}
+                <a href="https://app.hoohacks.io" target="_blank" rel="noreferrer"
                   className="inline-flex h-10 items-center justify-center rounded-md bg-white px-8 py-2 text-sm font-medium text-primary shadow transition-colors hover:bg-white/90"
                   type="button"
                 >
                   Apply Today!
-                </button> */}
+                </a>
               </div>
             </div>
           </div>
