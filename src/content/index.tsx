@@ -121,7 +121,7 @@ function Landing(): React.JSX.Element {
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Applications Open Mid-December!
+                  Applications Open Now!
                 </h2>
                 <p className="mx-auto max-w-[700px] md:text-xl">
 
@@ -129,7 +129,7 @@ function Landing(): React.JSX.Element {
               </div>
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 {/* Stay tuned! */}
-                <a href="https://app.hoohacks.io" target="_blank" rel="noreferrer"
+                <a href="https://app.hoohacks.io/register" target="_blank" rel="noreferrer"
                   className="inline-flex h-10 items-center justify-center rounded-md bg-white px-8 py-2 text-sm font-medium text-primary shadow transition-colors hover:bg-white/90"
                   type="button"
                 >
