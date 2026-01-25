@@ -104,7 +104,7 @@ function Footer(): React.JSX.Element {
               About
             </h3>
             <ul className="space-y-2">
-              {[{ text: 'Top', link: '/#' },{ text: 'About', link: '/#about' }, { text: 'FAQ', link: '/#faq' }].map(
+              {[{ text: 'Top', link: '/#' }, { text: 'About', link: '/#about' }, { text: 'FAQ', link: '/#faq' }].map(
                 (item) => (
                   <li key={item.link}>
                     <a
@@ -159,7 +159,7 @@ function Footer(): React.JSX.Element {
         </div>
         <div className="mt-12 border-t pt-8 text-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} HooHacks
+            © {new Date().getFullYear()} HooHacks | <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md">MLH Code of Conduct</a>
           </p>
         </div>
       </div>
