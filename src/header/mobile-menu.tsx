@@ -48,18 +48,25 @@ export function MobileMenu({
         </div>
         <nav className="mt-6 flex flex-col gap-4">
           <a
-            className="text-base font-medium hover:text-primary"
+            className="font-mono text-base font-medium text-muted-foreground hover:text-primary"
             href="#about"
             onClick={onClose}
           >
             About
           </a>
           <a
-            className="text-base font-medium hover:text-primary"
+            className="font-mono text-base font-medium text-muted-foreground hover:text-primary"
             href="#faq"
             onClick={onClose}
           >
             FAQ
+          </a>
+          <a
+            className="mt-2 inline-flex h-10 items-center justify-center rounded-md bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 text-sm font-semibold text-white shadow-[0_0_25px_-8px_rgba(139,92,246,0.8)]"
+            href="#apply"
+            onClick={onClose}
+          >
+            Get Notified
           </a>
         </nav>
       </div>

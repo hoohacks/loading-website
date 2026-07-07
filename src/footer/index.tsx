@@ -4,7 +4,11 @@ import singleSpaReact from 'single-spa-react';
 
 function Footer(): React.JSX.Element {
   return (
-    <footer className="border-t border-muted bg-background">
+    <footer className="relative border-t border-white/5 bg-background">
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/60 to-transparent"
+      />
       <div className="px-4 py-12 md:px-6 md:py-16 mx-auto max-w-7xl">
         <div className="grid gap-8 grid-cols-2 md:grid-cols-5">
           <div className="col-span-1 sm:col-span-2 lg:col-span-2">
@@ -20,6 +24,9 @@ function Footer(): React.JSX.Element {
             </a>
             <p className="mt-4 max-w-xs text-muted-foreground">
               HooHacks 2027 is coming soon! Join us for an unforgettable weekend of innovation and collaboration.
+            </p>
+            <p className="mt-3 font-mono text-xs text-primary">
+              {'// theme loading_'}
             </p>
             <div className="mt-6 flex gap-4">
               {[
@@ -157,7 +164,7 @@ function Footer(): React.JSX.Element {
             </ul>
           </div>
         </div>
-        <div className="mt-12 border-t pt-8 text-center">
+        <div className="mt-12 border-t border-white/10 pt-8 text-center">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} HooHacks | <a href="https://github.com/MLH/mlh-policies/blob/main/code-of-conduct.md">MLH Code of Conduct</a>
           </p>
