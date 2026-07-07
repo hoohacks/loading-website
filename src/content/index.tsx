@@ -29,7 +29,7 @@ function Landing(): React.JSX.Element {
                     width="550"
                   />
                   <p className="text-muted-foreground md:text-xl font-mono w-full">
-                    // March 21-22, 2026 | University of Virginia
+                    // TBD 2027 | University of Virginia
                     <br />
                     // theme loading_
                   </p>
@@ -53,24 +53,69 @@ function Landing(): React.JSX.Element {
         {/* Apply Section */}
         <section className="bg-primary py-20 text-primary-foreground" id="apply">
           <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
+            <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-background/60 p-6 shadow-sm backdrop-blur md:p-10">
+              <div className="space-y-3 text-center">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  Applications Open Now!
+                  Stay Updated!
                 </h2>
-                <p className="mx-auto max-w-[700px] md:text-xl">
-
+                <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                  Subscribe to get official HooHacks announcements and registration alerts.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                {/* Stay tuned! */}
-                <a href="https://app.hoohacks.io/register" target="_blank" rel="noreferrer"
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-white px-8 py-2 text-sm font-medium text-primary shadow transition-colors hover:bg-white/90"
-                  type="button"
-                >
-                  Apply Today!
-                </a>
-              </div>
+
+              {/* Apply Today! */}
+              {/*
+              <a
+                href="https://app.hoohacks.io/register"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-white px-8 py-2 text-sm font-medium text-primary shadow transition-colors hover:bg-white/90"
+                type="button"
+              >
+                Apply Today!
+              </a>
+              */}
+
+              <form
+                className="mt-8 w-full"
+                action="https://hoohacks.us17.list-manage.com/subscribe/post"
+                method="POST"
+                noValidate
+              >
+                <input type="hidden" name="u" value="8db3fa0f566f9edea113259df" />
+                <input type="hidden" name="id" value="b74b5fd33d" />
+                <div className="space-y-4 md:space-y-6">
+                  <input
+                    type="text"
+                    name="FNAME"
+                    placeholder="First Name"
+                    className="h-11 w-full rounded-md border border-white/10 bg-black/30 px-4 text-sm text-foreground outline-none transition focus:border-white/20 focus:ring-2 focus:ring-white/10 md:h-12"
+                  />
+
+                  <input
+                    type="text"
+                    name="LNAME"
+                    placeholder="Last Name"
+                    className="h-11 w-full rounded-md border border-white/10 bg-black/30 px-4 text-sm text-foreground outline-none transition focus:border-white/20 focus:ring-2 focus:ring-white/10 md:h-12"
+                  />
+
+                  <input
+                    type="email"
+                    name="EMAIL"
+                    placeholder="Email"
+                    className="h-11 w-full rounded-md border border-white/10 bg-black/30 px-4 text-sm text-foreground outline-none transition focus:border-white/20 focus:ring-2 focus:ring-white/10 md:h-12"
+                  />
+
+                  <div className="pt-2 text-center">
+                    <button
+                      type="submit"
+                      className="inline-flex h-11 items-center justify-center rounded-md bg-white px-6 text-sm font-medium text-primary transition-colors hover:bg-white/90 md:h-12 md:px-8"
+                    >
+                      Subscribe!
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </section>

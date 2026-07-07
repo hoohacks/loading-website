@@ -19,7 +19,7 @@ function Footer(): React.JSX.Element {
               <span className="text-xl font-bold">HooHacks</span>
             </a>
             <p className="mt-4 max-w-xs text-muted-foreground">
-              HooHacks 2026 is coming soon! Join us for an unforgettable weekend of innovation and collaboration.
+              HooHacks 2027 is coming soon! Join us for an unforgettable weekend of innovation and collaboration.
             </p>
             <div className="mt-6 flex gap-4">
               {[
