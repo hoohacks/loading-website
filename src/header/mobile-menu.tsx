@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import { APPLY_URL } from '../apply-link';
+import { NAV_LINKS } from './nav-links';
+
 export function MobileMenu({
   open,
   onClose,
@@ -5,64 +9,75 @@ export function MobileMenu({
   open: boolean;
   onClose: () => void;
 }): React.JSX.Element {
+  useEffect(() => {
+    if (!open) return;
+
+    const onKey = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') onClose();
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKey);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [open, onClose]);
+
   return (
     <div
-      className={`fixed top-0 inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden${open ? '' : ' hidden'}`}
+      className={`fixed inset-0 z-50 bg-ink sm:hidden${open ? '' : ' hidden'}`}
       id="mobile-menu"
     >
-      <div className="fixed inset-y-0 top-0 right-0 w-full min-h-svh max-w-xs bg-background p-6 shadow-lg">
-        <div className="flex items-center justify-between">
-          <a className="flex items-center gap-2" href="/" onClick={onClose}>
-            <img
-              alt="Logo"
-              className="rounded"
-              height="32"
-              src="/logo.svg"
-              width="32"
-            />
-            <span className="text-xl font-bold">HooHacks</span>
-          </a>
-          <button
-            className="inline-flex h-9 items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
-            id="close-mobile-menu"
-            onClick={onClose}
-            type="button"
+      <div className="shell flex h-16 items-center border-b border-rule">
+        <a aria-label="HooHacks home" className="flex items-center" href="/" onClick={onClose}>
+          <img alt="" aria-hidden height="30" src="/logo.svg" width="35" />
+        </a>
+        <button
+          className="ml-auto inline-flex size-9 items-center justify-center rounded-[2px] border border-rule text-chalk"
+          onClick={onClose}
+          type="button"
+        >
+          <svg
+            aria-hidden
+            className="size-4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              width="24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M18 6 6 18" />
-              <path d="m6 6 12 12" />
-            </svg>
-            <span className="sr-only">Close menu</span>
-          </button>
-        </div>
-        <nav className="mt-6 flex flex-col gap-4">
-          <a
-            className="text-base font-medium hover:text-primary"
-            href="#about"
-            onClick={onClose}
-          >
-            About
-          </a>
-          <a
-            className="text-base font-medium hover:text-primary"
-            href="#faq"
-            onClick={onClose}
-          >
-            FAQ
-          </a>
-        </nav>
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+          <span className="sr-only">Close menu</span>
+        </button>
       </div>
+
+      <nav aria-label="Main" className="shell flex flex-col pt-8">
+        {NAV_LINKS.map((link) => (
+          <a
+            className="t-h2 border-b border-rule py-5 text-4xl text-chalk"
+            href={link.href}
+            key={link.href}
+            onClick={onClose}
+          >
+            {link.label}
+          </a>
+        ))}
+        <a className="btn btn-primary mt-8" href="#notify" onClick={onClose}>
+          Get notified
+        </a>
+        <a
+          className="btn btn-quiet mt-3"
+          href={APPLY_URL}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Apply to join the team
+        </a>
+      </nav>
     </div>
   );
 }

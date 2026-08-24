@@ -1,34 +1,231 @@
 @import 'tailwindcss';
 
+/*
+ * HooHacks 2027 design tokens.
+ * Violet-black ground, one violet accent. The only glitch treatment on the
+ * page is the pending theme field and the band edges; everything else is
+ * carried by type, spacing and hairlines.
+ */
 @theme {
-  --color-background: black;
-  --color-foreground: white;
-  --color-primary: rgb(24, 0, 77);
-  --color-primary-foreground: rgb(255, 255, 255);
-  --color-muted: rgb(8, 0, 26);
-  --color-muted-foreground: whitesmoke;
-  --border: hsl(0% 0% 8.8%);
+  --color-ink: #0a0713;
+  --color-slab: #130d22;
+  --color-rule: #2a1e45;
+  --color-chalk: #eae6f5;
+  --color-haze: #9990b4;
+  --color-slate: #5f5680;
+  --color-primary: #a78bfa;
+  --color-plum: #7c3aed;
+
+  --font-display: 'Chakra Petch', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', 'Courier New', monospace;
+
+  --radius-hard: 2px;
 }
 
-@utility container {
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 2rem;
-
-  @variants 2xl {
-    max-width: 1400px;
-  }
-}
-
-.backdrop-blur {
-  backdrop-filter: blur(8px);
-}
-
-.shadow-sm {
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 7rem;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  background-color: var(--color-ink);
+  color: var(--color-chalk);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* The content app is the only one that should absorb leftover height. */
+[id='single-spa-application:content'] {
+  flex: 1 1 auto;
+}
+
+::selection {
+  background-color: var(--color-plum);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ---- Layout shell -------------------------------------------------- */
+
+.shell {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .shell {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* ---- Type roles ---------------------------------------------------- */
+
+.t-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.02;
+}
+
+.t-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.08;
+}
+
+.t-h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.t-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.t-lead {
+  font-size: 1.0625rem;
+  line-height: 1.62;
+}
+
+@media (min-width: 768px) {
+  .t-lead {
+    font-size: 1.1875rem;
+  }
+}
+
+/* ---- Band edges -----------------------------------------------------
+ * The mailing-list band is cut in and out on a hard stepped edge, at a
+ * fixed 320px period so it reads as displaced scanlines rather than a wave.
+ */
+.torn {
+  height: 14px;
+  background-color: var(--color-ink);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14' viewBox='0 0 240 14'%3E%3Cpath d='M0 14 L0 8 L14 8 L14 4 L30 4 L30 11 L38 11 L38 6 L64 6 L64 3 L92 3 L92 9 L104 9 L104 5 L128 5 L128 12 L150 12 L150 4 L162 4 L162 8 L190 8 L190 3 L206 3 L206 10 L228 10 L228 6 L240 6 L240 14 Z' fill='%23eae6f5'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: bottom center;
+}
+
+.torn--exit {
+  transform: scaleY(-1);
+}
+
+/* ---- Controls ------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 3rem;
+  padding-inline: 1.5rem;
+  border-radius: var(--radius-hard);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-plum);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: #8b5cf6;
+}
+
+.btn-quiet {
+  border: 1px solid var(--color-rule);
+  color: var(--color-chalk);
+}
+
+.btn-quiet:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.field {
+  width: 100%;
+  height: 3rem;
+  padding: 0 0 0 0.0625rem;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid rgb(95 86 128 / 0.4);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.16s ease;
+}
+
+.field::placeholder {
+  color: var(--color-slate);
+}
+
+.field:focus {
+  border-bottom-color: var(--color-plum);
+}
+
+.field:focus-visible {
+  outline: none;
+  border-radius: 0;
+}
+
+/* ---- FAQ disclosure -------------------------------------------------- */
+
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary .mark::after {
+  content: '+';
+}
+
+.faq[open] summary .mark::after {
+  content: '−';
+}
+
+/* Keep the expanded question marked once the pointer moves away. */
+.faq[open] summary h3 {
+  color: var(--color-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
