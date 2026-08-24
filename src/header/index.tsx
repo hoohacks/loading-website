@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
 import { APPLY_URL } from '../apply-link';
@@ -6,8 +6,39 @@ import { MobileMenu } from './mobile-menu';
 import { NAV_LINKS } from './nav-links';
 import './header.css';
 
+/*
+ * True once anything has scrolled beneath the sticky bar. The bar only takes
+ * on a material and a divider when there is content under it to separate.
+ */
+function useScrolledUnder(threshold = 4): boolean {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    let queued = false;
+
+    const read = (): void => {
+      queued = false;
+      setScrolled(window.scrollY > threshold);
+    };
+    const onScroll = (): void => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(read);
+    };
+
+    read();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [threshold]);
+
+  return scrolled;
+}
+
 function Header(): React.JSX.Element {
   const [menuOpen, setMenuOpen] = useState(false);
+  const scrolled = useScrolledUnder();
 
   return (
     <>
@@ -31,7 +62,7 @@ function Header(): React.JSX.Element {
         </div>
       </div>
 
-      <header className="w-full border-b border-rule bg-ink/85 backdrop-blur-md">
+      <header className={`chrome w-full${scrolled ? ' chrome--lifted' : ''}`}>
         <div className="shell flex h-16 items-center gap-8">
           <a aria-label="HooHacks home" className="group flex items-center" href="/">
             <img
@@ -50,7 +81,7 @@ function Header(): React.JSX.Element {
           >
             {NAV_LINKS.map((link) => (
               <a
-                className="text-sm text-haze transition-colors hover:text-chalk"
+                className="text-sm text-haze transition-colors hover:text-chalk active:text-primary"
                 href={link.href}
                 key={link.href}
               >
@@ -65,7 +96,7 @@ function Header(): React.JSX.Element {
           <button
             aria-controls="mobile-menu"
             aria-expanded={menuOpen}
-            className="ml-auto inline-flex size-9 items-center justify-center rounded-[2px] border border-rule text-chalk transition-colors hover:border-primary hover:text-primary sm:hidden"
+            className="icon-btn ml-auto inline-flex size-9 items-center justify-center rounded-[2px] border border-rule text-chalk hover:border-primary hover:text-primary sm:hidden"
             onClick={() => {
               setMenuOpen(true);
             }}

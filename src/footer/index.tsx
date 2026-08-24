@@ -31,7 +31,7 @@ function LinkColumn({
         {links.map((link) => (
           <li key={link.href}>
             <a
-              className="text-sm text-haze transition-colors hover:text-primary"
+              className="text-sm text-haze transition-colors hover:text-primary active:text-primary"
               href={link.href}
             >
               {link.name}
@@ -53,7 +53,7 @@ function Footer(): React.JSX.Element {
               <img alt="" aria-hidden height="26" src="/logo.svg" width="30" />
               <span className="t-h3 text-lg text-chalk">HooHacks</span>
             </a>
-            <p className="mt-5 max-w-[38ch] text-sm leading-relaxed text-haze">
+            <p className="t-body mt-5 max-w-[38ch] text-sm text-haze">
               Virginia&rsquo;s largest hackathon, run by students at the
               University of Virginia. The 2027 dates and theme have not been
               announced yet.

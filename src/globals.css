@@ -21,6 +21,9 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', 'Courier New', monospace;
 
   --radius-hard: 2px;
+
+  /* One deceleration curve for the whole site, shared with the JS springs. */
+  --ease-glide: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 html {
@@ -68,26 +71,34 @@ body {
   }
 }
 
-/* ---- Type roles ---------------------------------------------------- */
+/* ---- Type roles -----------------------------------------------------
+ * Tracking is size-specific, never one value across a fluid range: letters
+ * read too far apart as they grow, so the two clamped display roles tighten
+ * as they scale. The clamp on letter-spacing tracks the clamp on font-size,
+ * with the intended endpoints noted per role. Leading moves the other way,
+ * tight on the large roles and open on body copy.
+ */
 
 .t-display {
   font-family: var(--font-display);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  /* 36px reads at -0.015em, 64px at -0.030em */
+  letter-spacing: clamp(-1.92px, 1.24px - 0.271vw, -0.54px);
   line-height: 1.02;
 }
 
 .t-h2 {
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: -0.005em;
+  /* 30px reads at -0.012em, 48px at -0.022em */
+  letter-spacing: clamp(-1.06px, 0.83px - 0.165vw, -0.36px);
   line-height: 1.08;
 }
 
 .t-h3 {
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: 0;
+  letter-spacing: -0.006em;
   line-height: 1.2;
 }
 
@@ -101,6 +112,7 @@ body {
 
 .t-lead {
   font-size: 1.0625rem;
+  letter-spacing: 0;
   line-height: 1.62;
 }
 
@@ -108,6 +120,16 @@ body {
   .t-lead {
     font-size: 1.1875rem;
   }
+}
+
+/*
+ * Metrics for small copy: it opens up slightly instead of tightening, and
+ * takes a comfortable leading. The size stays on the utility so a responsive
+ * text-* class is still free to change it.
+ */
+.t-body {
+  letter-spacing: 0.006em;
+  line-height: 1.65;
 }
 
 /* ---- Band edges -----------------------------------------------------
@@ -119,14 +141,51 @@ body {
   background-color: var(--color-ink);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='14' viewBox='0 0 240 14'%3E%3Cpath d='M0 14 L0 8 L14 8 L14 4 L30 4 L30 11 L38 11 L38 6 L64 6 L64 3 L92 3 L92 9 L104 9 L104 5 L128 5 L128 12 L150 12 L150 4 L162 4 L162 8 L190 8 L190 3 L206 3 L206 10 L228 10 L228 6 L240 6 L240 14 Z' fill='%23eae6f5'/%3E%3C/svg%3E");
   background-repeat: repeat-x;
-  background-position: bottom center;
+  /* Left-aligned so the x offset is a plain pixel value the displacement can
+     animate; the tile repeats across the full width either way. */
+  background-position: left bottom;
 }
 
-.torn--exit {
-  transform: scaleY(-1);
+/* ---- Materials ------------------------------------------------------
+ * Translucent chrome that content scrolls underneath, rather than an opaque
+ * strip that permanently eats a band of the viewport.
+ */
+.material {
+  background-color: rgb(10 7 19 / 0.8);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
 }
 
-/* ---- Controls ------------------------------------------------------- */
+/*
+ * Sticky nav. At the top of the document there is nothing underneath it, so
+ * it carries no divider and no material at all. The hairline and the blur
+ * fade in only once content has actually scrolled under the bar. The blur is
+ * declared at 0px rather than `none` so the two states interpolate instead of
+ * snapping.
+ */
+.chrome {
+  border-bottom: 1px solid transparent;
+  background-color: rgb(10 7 19 / 0);
+  backdrop-filter: blur(0px) saturate(100%);
+  -webkit-backdrop-filter: blur(0px) saturate(100%);
+  transition:
+    background-color 0.3s var(--ease-glide),
+    border-color 0.3s var(--ease-glide),
+    backdrop-filter 0.3s var(--ease-glide);
+}
+
+.chrome--lifted {
+  background-color: rgb(10 7 19 / 0.8);
+  border-bottom-color: var(--color-rule);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+
+/* ---- Controls -------------------------------------------------------
+ * Feedback happens on pointer-down, not on release: :active fires the moment
+ * a control is pressed. Press-in is quick and flat; the release rides the
+ * shared glide curve back out, so letting go feels softer than pressing.
+ */
 
 .btn {
   display: inline-flex;
@@ -140,10 +199,17 @@ body {
   font-weight: 600;
   letter-spacing: -0.005em;
   white-space: nowrap;
+  transform: translateZ(0);
   transition:
     background-color 0.16s ease,
     border-color 0.16s ease,
-    color 0.16s ease;
+    color 0.16s ease,
+    transform 0.26s var(--ease-glide);
+}
+
+.btn:active {
+  transform: scale(0.97);
+  transition: transform 0.09s ease-out;
 }
 
 .btn-primary {
@@ -163,6 +229,27 @@ body {
 .btn-quiet:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+}
+
+/* 36px square icon controls, padded out to a 48px hit target. */
+.icon-btn {
+  position: relative;
+  transform: translateZ(0);
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    transform 0.26s var(--ease-glide);
+}
+
+.icon-btn::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+  transition: transform 0.09s ease-out;
 }
 
 .field {
@@ -194,27 +281,27 @@ body {
 
 /* ---- FAQ disclosure -------------------------------------------------- */
 
-.faq summary {
-  list-style: none;
+.faq-trigger {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 1.5rem;
+  text-align: left;
   cursor: pointer;
 }
 
-.faq summary::-webkit-details-marker {
-  display: none;
-}
-
-.faq summary .mark::after {
-  content: '+';
-}
-
-.faq[open] summary .mark::after {
-  content: '−';
-}
-
-/* Keep the expanded question marked once the pointer moves away. */
-.faq[open] summary h3 {
+/* The question takes the accent the instant the row goes down, before the
+ * panel has begun to open. */
+.faq-trigger:active .faq-question {
   color: var(--color-primary);
+  transition-duration: 0.06s;
 }
+
+/* ---- Accessibility preferences ---------------------------------------
+ * Reduced motion is a gentler equivalent, not the absence of feedback: the
+ * transforms, heights and springs go, the colour and opacity changes that
+ * explain what just happened stay.
+ */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -226,6 +313,38 @@ body {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: 0.18s !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material,
+  .chrome,
+  .chrome--lifted {
+    background-color: var(--color-ink);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-rule: #4c3c78;
+    --color-haze: #c6bedb;
+    --color-slate: #9188b0;
+  }
+
+  .material,
+  .chrome,
+  .chrome--lifted {
+    background-color: var(--color-ink);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .btn-quiet,
+  .icon-btn {
+    border-color: var(--color-haze);
   }
 }
