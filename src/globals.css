@@ -82,9 +82,9 @@ body {
 .t-display {
   font-family: var(--font-display);
   font-weight: 700;
-  /* 36px reads at -0.015em, 64px at -0.030em */
-  letter-spacing: clamp(-1.92px, 1.24px - 0.271vw, -0.54px);
-  line-height: 1.02;
+  /* 30px reads at -0.014em, 50px at -0.024em */
+  letter-spacing: clamp(-1.19px, 0.77px - 0.143vw, -0.43px);
+  line-height: 1.06;
 }
 
 .t-h2 {

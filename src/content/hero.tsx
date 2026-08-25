@@ -1,7 +1,7 @@
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useCallback } from 'react';
 import { FUCHSIA, INDIGO } from './chroma';
-import { HeroField } from './hero-field';
+import { HeroGlitch } from './hero-glitch';
 import { EASE } from './motion';
 import { PendingField } from './pending-field';
 import { Eyebrow } from './primitives';
@@ -81,53 +81,46 @@ export function Hero(): React.JSX.Element {
   return (
     <section className="relative overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <HeroField />
+        <HeroGlitch />
       </div>
 
-      <div className="shell pt-14 pb-20 md:pt-20 md:pb-28">
-        <motion.div {...step(0)}>
-          <Eyebrow>2027 &middot; University of Virginia</Eyebrow>
-        </motion.div>
+      {/*
+        Centred, with the vertical air doing the work. Nothing here is bigger
+        than it needs to be: the confidence is supposed to come from the space
+        around the type rather than from the size of it.
+      */}
+      <div className="shell flex min-h-[82vh] flex-col justify-center pt-20 pb-16 md:pt-24 md:pb-20">
+        <div className="flex flex-col items-center text-center">
+          <motion.div {...step(0)}>
+            <Eyebrow>2027 &middot; University of Virginia</Eyebrow>
+          </motion.div>
 
-        <motion.img
-          alt="HooHacks"
-          animate={{
-            opacity: 1,
-            y: 0,
-            filter: reduceMotion ? 'none' : SPLIT_SETTLED,
-          }}
-          className="mt-8 w-full max-w-[20rem] md:max-w-[30rem]"
-          height={148}
-          initial={{
-            opacity: 0,
-            y: reduceMotion ? 0 : 16,
-            filter: reduceMotion ? 'none' : SPLIT_OPEN,
-          }}
-          src="/big-logo.png"
-          transition={{
-            duration: reduceMotion ? 0.3 : 0.6,
-            delay: 0.06,
-            ease: EASE,
-            filter: { type: 'spring', bounce: 0, duration: 0.55, delay: 0.1 },
-          }}
-          width={828}
-        />
+          <motion.img
+            alt="HooHacks"
+            className="mt-10 w-full max-w-[17rem] md:mt-12 md:max-w-[23rem]"
+            height={148}
+            src="/big-logo.png"
+            width={828}
+            {...step(1)}
+          />
 
-        <motion.h1
-          className="t-display mt-9 max-w-[16ch] text-[clamp(2.25rem,5.5vw,4rem)] text-chalk"
-          {...step(2)}
-        >
-            Virginia’s largest hackathon returns in 2027
-        </motion.h1>
+          <motion.h1
+            className="t-display mt-12 max-w-[19ch] text-[clamp(1.9rem,3.6vw,3.1rem)] text-chalk md:mt-16"
+            {...step(2)}
+          >
+            Virginia&rsquo;s largest hackathon returns in 2027
+          </motion.h1>
 
-        <div className="mt-10 flex flex-col gap-9 md:flex-row md:items-end md:justify-between md:gap-16">
-          <motion.p className="t-lead max-w-[52ch] text-haze" {...step(3)}>
+          <motion.p className="t-lead mt-6 max-w-[58ch] text-haze" {...step(3)}>
             24 hours of building at UVA, free for every student and open to
             any major. The dates and the theme have not been announced yet.
             Join the mailing list to be notified when they are announced.
           </motion.p>
 
-          <motion.div className="flex flex-wrap gap-3" {...step(4)}>
+          <motion.div
+            className="mt-10 flex flex-wrap justify-center gap-3"
+            {...step(4)}
+          >
             <a className="btn btn-primary" href="#notify">
               Get notified
             </a>
@@ -136,9 +129,11 @@ export function Hero(): React.JSX.Element {
             </a>
           </motion.div>
         </div>
+      </div>
 
+      <div className="shell pb-24 md:pb-32">
         <motion.div
-          className="mt-14 rounded-[2px] border border-rule bg-slab md:mt-20"
+          className="rounded-[2px] border border-rule bg-slab"
           {...step(5)}
         >
           <div className="flex items-center justify-between gap-4 border-b border-rule px-5 py-3.5 md:px-7">
