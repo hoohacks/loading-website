@@ -1,10 +1,10 @@
 import { motion, useAnimationControls, useReducedMotion } from 'framer-motion';
 import { useCallback } from 'react';
-import { FUCHSIA, INDIGO } from './chroma';
 import { HeroGlitch } from './hero-glitch';
 import { EASE } from './motion';
 import { PendingField } from './pending-field';
 import { Eyebrow } from './primitives';
+import { HeroWordmark } from './wordmark';
 
 const CONFIRMED_ROWS = [
   {
@@ -29,15 +29,6 @@ const PENDING_ROWS = [
   { field: 'Dates', phase: 0 },
   { field: 'Theme', phase: 0.45 },
 ];
-
-/*
- * The wordmark asset already carries a baked chroma fringe. This pulls the
- * same two channels apart on arrival and closes them back up. Hard offsets at
- * zero blur radius, so they read as displaced copies rather than glows.
- */
-const SPLIT_OPEN = `drop-shadow(-6px 0 0 rgba(${FUCHSIA}, 0.55)) drop-shadow(6px 0 0 rgba(${INDIGO}, 0.55))`;
-const SPLIT_SETTLED = `drop-shadow(0px 0 0 rgba(${FUCHSIA}, 0)) drop-shadow(0px 0 0 rgba(${INDIGO}, 0))`;
-
 
 export function Hero(): React.JSX.Element {
   const reduceMotion = useReducedMotion();
@@ -108,14 +99,12 @@ export function Hero(): React.JSX.Element {
             <Eyebrow>2027 &middot; University of Virginia</Eyebrow>
           </motion.div>
 
-          <motion.img
-            alt="HooHacks"
-            className="mt-10 w-full max-w-[17rem] md:mt-12 md:max-w-[23rem]"
-            height={148}
-            src="/big-logo.png"
-            width={828}
+          <motion.div
+            className="mt-10 w-full max-w-[19rem] md:mt-12 md:max-w-[26rem]"
             {...step(1)}
-          />
+          >
+            <HeroWordmark delay={0.06} />
+          </motion.div>
 
           <motion.h1
             className="t-display mt-12 max-w-[19ch] text-[clamp(1.9rem,3.6vw,3.1rem)] text-chalk md:mt-16"

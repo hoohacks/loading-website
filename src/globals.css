@@ -33,6 +33,14 @@
  */
 :root {
   --nav-h: 4rem;
+
+  /*
+   * The two channels every glitch surface splits into, as bare triples so
+   * they can be given an alpha at the point of use. These mirror chroma.ts,
+   * which carries the same values for the canvas fields; change them together.
+   */
+  --channel-a: 232 121 249;
+  --channel-b: 79 70 229;
 }
 
 html {
@@ -238,6 +246,34 @@ body {
 .btn-quiet:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+}
+
+/*
+ * Brand marks split into their two channels on hover, and further on press,
+ * rather than lighting up. A glow would be a different vocabulary from the
+ * rest of the page; a hard offset at zero blur radius is the same one the
+ * wordmark and the pending fields already speak. The rest state declares both
+ * shadows at zero alpha so the filter interpolates instead of snapping.
+ */
+.split-hover {
+  filter: drop-shadow(0 0 0 rgb(var(--channel-a) / 0))
+    drop-shadow(0 0 0 rgb(var(--channel-b) / 0));
+  transition: filter 0.16s var(--ease-glide);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .split-hover:hover,
+  .group:hover .split-hover {
+    filter: drop-shadow(-2px 0 0 rgb(var(--channel-a) / 0.75))
+      drop-shadow(2px 0 0 rgb(var(--channel-b) / 0.75));
+  }
+}
+
+.split-hover:active,
+.group:active .split-hover {
+  filter: drop-shadow(-4px 0 0 rgb(var(--channel-a) / 0.85))
+    drop-shadow(4px 0 0 rgb(var(--channel-b) / 0.85));
+  transition-duration: 0.07s;
 }
 
 /* 36px square icon controls, padded out to a 48px hit target. */

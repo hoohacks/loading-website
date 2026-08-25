@@ -49,8 +49,15 @@ function Footer(): React.JSX.Element {
       <div className="shell py-14 md:py-16">
         <div className="grid gap-10 md:grid-cols-[5fr_7fr] md:gap-16">
           <div>
-            <a className="flex items-center gap-2.5" href="/">
-              <img alt="" aria-hidden height="26" src="/logo.svg" width="30" />
+            <a className="group flex items-center gap-2.5" href="/">
+              <img
+                alt=""
+                aria-hidden
+                className="split-hover"
+                height="26"
+                src="/logo.svg"
+                width="30"
+              />
               <span className="t-h3 text-lg text-chalk">HooHacks</span>
             </a>
             <p className="t-body mt-5 max-w-[38ch] text-sm text-haze">

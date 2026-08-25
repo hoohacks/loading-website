@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { FUCHSIA, INDIGO, VIOLET } from './chroma';
+import { createCpuRenderer } from './field-2d';
+import { createGlRenderer, supportsGl, type FieldRenderer } from './field-gl';
+import { createPointer, createState, reseed, step } from './field-state';
 
 /* --------------------------------------------------------------------------
  * Hero glitch field.
@@ -11,29 +13,44 @@ import { FUCHSIA, INDIGO, VIOLET } from './chroma';
  *
  * Density falls off toward the middle so the centred type sits on clean ink
  * and the texture frames it rather than running underneath it.
+ *
+ * This file owns the wiring only. What the field does is in field-state.ts;
+ * how it gets drawn is in field-gl.ts, with field-2d.ts as the fallback.
  * ------------------------------------------------------------------------ */
 
-const PITCH = 5;
-const DOT = 3;
-/** Share of grid cells that are lit. */
-const DENSITY = 0.1;
-const BAND = 3;
+/**
+ * A step longer than this is treated as a gap rather than a step: a tab that
+ * has been asleep should resume, not fast-forward through the time it missed.
+ */
+const MAX_STEP_MS = 100;
 
 export function HeroGlitch(): React.JSX.Element {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
+    if (!canvas) return;
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let cols = 0;
-    let rows = 0;
-    let lit = new Uint8Array(0);
-    let slip = new Float32Array(0);
-    let split = new Float32Array(0);
+    /*
+     * Reduced motion paints one static frame, so there is nothing to gain from
+     * a GPU context: take the CPU path and skip the shader compile entirely.
+     *
+     * Otherwise the shader path is settled on a throwaway canvas before this
+     * one is touched, because a canvas keeps the first context type it is
+     * given and a failed WebGL attempt would leave the fallback with nowhere
+     * to draw.
+     */
+    const renderer: FieldRenderer | null =
+      !reduce && supportsGl()
+        ? createGlRenderer(canvas)
+        : createCpuRenderer(canvas);
+    if (!renderer) return;
+
+    let state = createState(1, renderer.pitch);
+    const pointer = createPointer();
+    let rect = canvas.getBoundingClientRect();
     let frame = 0;
     let last = 0;
 
@@ -44,54 +61,25 @@ export function HeroGlitch(): React.JSX.Element {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      cols = Math.max(1, Math.ceil(width / PITCH));
-      rows = Math.max(1, Math.ceil(height / PITCH));
-      lit = new Uint8Array(cols * rows);
-      slip = new Float32Array(rows);
-      split = new Float32Array(rows);
-      for (let i = 0; i < lit.length; i += 1) {
-        lit[i] = Math.random() < DENSITY ? 1 : 0;
-      }
+      renderer.resize(width, height, dpr);
+      const rows = Math.max(1, Math.ceil(height / renderer.pitch));
+      const exit = state.exit;
+      state = createState(rows, renderer.pitch);
+      state.exit = exit;
+      rect = canvas.getBoundingClientRect();
     };
 
-    const paint = (): void => {
-      const width = canvas.clientWidth;
-      const height = canvas.clientHeight;
-      ctx.clearRect(0, 0, width, height);
-
-      const cx = width / 2;
-      const cy = height / 2;
-
-      for (let y = 0; y < rows; y += 1) {
-        const shift = slip[y];
-        const chroma = split[y];
-        const py = y * PITCH;
-        // Normalised distance from the middle, squared so the clear area in
-        // the centre is generous and the texture gathers at the edges.
-        const dy = (py - cy) / cy;
-
-        for (let x = 0; x < cols; x += 1) {
-          if (lit[y * cols + x] === 0) continue;
-
-          const px = x * PITCH;
-          const dx = (px - cx) / cx;
-          const falloff = Math.min(1, dx * dx + dy * dy);
-          if (falloff < 0.04) continue;
-
-          if (chroma > 0.05) {
-            const edge = (chroma * 0.5 * falloff).toFixed(3);
-            ctx.fillStyle = `rgba(${FUCHSIA}, ${edge})`;
-            ctx.fillRect(px + shift - 3, py, DOT, DOT);
-            ctx.fillStyle = `rgba(${INDIGO}, ${edge})`;
-            ctx.fillRect(px + shift + 3, py, DOT, DOT);
-          }
-
-          ctx.fillStyle = `rgba(${VIOLET}, ${(0.34 * falloff).toFixed(3)})`;
-          ctx.fillRect(px + shift, py, DOT, DOT);
-        }
-      }
+    /*
+     * How far the hero has left the viewport, 0 to 1. Read once per painted
+     * frame off the cached rect rather than on every scroll event, which keeps
+     * scrolling free of forced layout.
+     */
+    const readExit = (): void => {
+      rect = canvas.getBoundingClientRect();
+      if (rect.height === 0) return;
+      const gone = -rect.top / rect.height;
+      state.exit = Math.max(0, Math.min(1, gone));
     };
 
     measure();
@@ -100,41 +88,17 @@ export function HeroGlitch(): React.JSX.Element {
     let suspend = (): void => {};
 
     if (reduce) {
-      paint();
+      renderer.draw(state);
     } else {
       const tick = (now: number): void => {
         frame = requestAnimationFrame(tick);
-        if (now - last < 33) return;
+        const elapsed = now - last;
+        if (elapsed < renderer.frameMs) return;
         last = now;
 
-        for (let y = 0; y < rows; y += 1) {
-          slip[y] *= 0.74;
-          split[y] *= 0.8;
-        }
-
-        // A band tears every second or so, then settles back.
-        if (Math.random() < 0.04) {
-          const start = Math.floor(Math.random() * rows);
-          const depth = BAND + Math.floor(Math.random() * BAND);
-          const offset = (Math.random() * 2 - 1) * 18;
-          for (let y = start; y < Math.min(rows, start + depth); y += 1) {
-            slip[y] = offset;
-            split[y] = 0.6 + Math.random() * 0.4;
-          }
-        }
-
-        // Every so often a band re-rolls, so the field is never quite the
-        // same texture twice.
-        if (Math.random() < 0.02) {
-          const start = Math.floor(Math.random() * rows);
-          for (let y = start; y < Math.min(rows, start + BAND); y += 1) {
-            for (let x = 0; x < cols; x += 1) {
-              lit[y * cols + x] = Math.random() < DENSITY ? 1 : 0;
-            }
-          }
-        }
-
-        paint();
+        readExit();
+        step(state, pointer, rect, Math.min(elapsed, MAX_STEP_MS));
+        renderer.draw(state);
       };
 
       let running = false;
@@ -150,9 +114,50 @@ export function HeroGlitch(): React.JSX.Element {
       };
     }
 
+    /*
+     * The field sits under a pointer-events-none wrapper, so it can never be
+     * the target of a pointer event itself. The listener goes on the window
+     * and the hit test runs against the canvas box, which also means the copy
+     * sitting on top of the field does not block the drag.
+     */
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    const onMove = (event: PointerEvent): void => {
+      if (event.pointerType !== 'mouse') return;
+      // Re-entering after a gap must not read as one huge frame of travel.
+      if (!pointer.inside) pointer.previousX = event.clientX;
+      pointer.clientX = event.clientX;
+      pointer.clientY = event.clientY;
+      pointer.inside = true;
+    };
+    const onOut = (): void => {
+      pointer.inside = false;
+    };
+
+    /*
+     * Coming back to the tab re-rolls every row at once, so the field you left
+     * is not the field you return to. Nothing announces it. It is only there
+     * so that a page left open all afternoon does not read as a frozen image
+     * the moment you look at it again.
+     */
+    const onVisibility = (): void => {
+      if (document.visibilityState !== 'visible') return;
+      reseed(state);
+      pointer.previousX = pointer.clientX;
+      last = performance.now();
+    };
+
+    if (fine && !reduce) {
+      window.addEventListener('pointermove', onMove, { passive: true });
+      document.addEventListener('pointerleave', onOut);
+    }
+    if (!reduce) {
+      document.addEventListener('visibilitychange', onVisibility);
+    }
+
     const resize = new ResizeObserver(() => {
       measure();
-      if (reduce) paint();
+      if (reduce) renderer.draw(state);
     });
     resize.observe(canvas);
 
@@ -164,8 +169,12 @@ export function HeroGlitch(): React.JSX.Element {
 
     return () => {
       suspend();
+      window.removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerleave', onOut);
+      document.removeEventListener('visibilitychange', onVisibility);
       resize.disconnect();
       onScreen.disconnect();
+      renderer.destroy();
     };
   }, []);
 
