@@ -79,8 +79,21 @@ export function Hero(): React.JSX.Element {
   }, [counter, reduceMotion]);
 
   return (
-    <section className="relative overflow-hidden">
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+    <section className="relative">
+      {/*
+        The field runs up past the top of the section by exactly the height of
+        the nav row, so at rest the bar has hero texture reading through it
+        instead of sitting on a flat edge. The bar itself is transparent until
+        something scrolls under it, at which point .chrome--lifted brings back
+        the dark material and the divider. The clip lives on this wrapper
+        rather than on the section, which would cut the overhang off. The
+        extra pixel is the bar's own hairline bottom border, which otherwise
+        leaves a sliver of flat ink along the top of the bar.
+      */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 top-[calc((var(--nav-h)+1px)*-1)] -z-10 overflow-hidden"
+      >
         <HeroGlitch />
       </div>
 

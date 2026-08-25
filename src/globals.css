@@ -26,6 +26,15 @@
   --ease-glide: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/*
+ * Height of the sticky nav row. It lives out here rather than in @theme
+ * because two apps need it: the header sizes the bar with it, and the hero
+ * runs its background up behind the bar by exactly this much.
+ */
+:root {
+  --nav-h: 4rem;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 7rem;

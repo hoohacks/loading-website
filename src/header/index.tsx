@@ -63,7 +63,7 @@ function Header(): React.JSX.Element {
       </div>
 
       <header className={`chrome w-full${scrolled ? ' chrome--lifted' : ''}`}>
-        <div className="shell flex h-16 items-center gap-8">
+        <div className="shell flex h-[var(--nav-h)] items-center gap-8">
           <a aria-label="HooHacks home" className="group flex items-center" href="/">
             <img
               alt=""
