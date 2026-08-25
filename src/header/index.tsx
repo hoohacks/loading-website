@@ -68,7 +68,7 @@ function Header(): React.JSX.Element {
             <img
               alt=""
               aria-hidden
-              className="transition-[filter] duration-200 group-hover:drop-shadow-[0_0_10px_rgba(167,139,250,0.65)]"
+              className="split-hover"
               height="30"
               src="/logo.svg"
               width="35"

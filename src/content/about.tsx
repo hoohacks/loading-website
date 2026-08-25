@@ -1,4 +1,5 @@
 import { Eyebrow, Reveal } from './primitives';
+import { Resolve } from './resolve';
 
 const WHAT_TO_EXPECT = [
   {
@@ -7,7 +8,7 @@ const WHAT_TO_EXPECT = [
   },
   {
     heading: 'Meet other students',
-    body: 'A few hundred students attend, along with engineers from sponsor companies. Team formation happens on site if you arrive without one.',
+    body: '800+ students attend, along with engineers from sponsor companies. Team formation happens on site if you arrive without one.',
   },
   {
     heading: 'No experience required',
@@ -28,7 +29,7 @@ export function About(): React.JSX.Element {
         <Reveal>
           <Eyebrow>About</Eyebrow>
           <h2 className="t-h2 mt-6 text-[clamp(1.9rem,4.2vw,3rem)] text-chalk">
-            A student-run hackathon, open to everyone.
+            <Resolve>A student-run hackathon, open to everyone.</Resolve>
           </h2>
           <img
             alt=""
@@ -36,7 +37,7 @@ export function About(): React.JSX.Element {
             className="mt-10 w-28 mix-blend-screen md:mt-14 md:w-36"
             height={169}
             loading="lazy"
-            src="/glitch-owl.gif"
+            src="/glitch-owl.webp"
             width={195}
           />
         </Reveal>

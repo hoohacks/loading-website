@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MAILCHIMP_ACTION, MAILCHIMP_AUDIENCE, MAILCHIMP_SINK } from './mailchimp';
 import { EASE } from './motion';
 import { Eyebrow, Reveal } from './primitives';
+import { Resolve } from './resolve';
 import { TornEdge } from './torn-edge';
 
 /* --------------------------------------------------------------------------
@@ -209,7 +210,9 @@ export function Notify(): React.JSX.Element {
           <Reveal>
             <Eyebrow tone="light">Mailing list</Eyebrow>
             <h2 className="t-h2 mt-6 text-[clamp(1.9rem,4.2vw,3rem)]">
-              Get the dates and theme as soon as we announce them.
+              <Resolve>
+                Get the dates and theme as soon as we announce them.
+              </Resolve>
             </h2>
             <p className="t-lead mt-5 text-slate">
               We&rsquo;ll email you when the 2027 dates and theme are set, and

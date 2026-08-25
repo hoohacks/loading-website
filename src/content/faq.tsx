@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useId, useState } from 'react';
 import { EASE } from './motion';
 import { Eyebrow, Reveal } from './primitives';
+import { Resolve } from './resolve';
 
 const FAQ_ITEMS: { question: string; answer: React.ReactNode }[] = [
   {
@@ -170,7 +171,7 @@ export function Faq(): React.JSX.Element {
       <Reveal>
         <Eyebrow>FAQ</Eyebrow>
         <h2 className="t-h2 mt-6 max-w-[14ch] text-[clamp(1.9rem,4.2vw,3rem)] text-chalk">
-          Common questions.
+          <Resolve>Common questions.</Resolve>
         </h2>
       </Reveal>
 
