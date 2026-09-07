@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import { APPLY_URL } from '../apply-link';
+// Applications are closed. Uncomment with the Apply row below when they reopen.
+// import { APPLY_URL } from '../apply-link';
 import { NAV_LINKS } from './nav-links';
 
 /*
@@ -145,6 +146,7 @@ export function MobileMenu({
             >
               Get notified
             </motion.a>
+            {/* Uncomment when team applications reopen.
             <motion.a
               className="btn btn-quiet mt-3"
               href={APPLY_URL}
@@ -154,6 +156,7 @@ export function MobileMenu({
             >
               Apply to join the team
             </motion.a>
+            */}
           </nav>
         </motion.div>
       ) : null}

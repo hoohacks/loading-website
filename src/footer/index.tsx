@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
-import { APPLY_URL } from '../apply-link';
+// Applications are closed. Uncomment with TEAM_LINKS below when they reopen.
+// import { APPLY_URL } from '../apply-link';
 
 const SOCIALS = [
   { name: 'Instagram', href: 'https://www.instagram.com/hoohacks/' },
@@ -15,7 +16,7 @@ const SITE_LINKS = [
   { name: 'FAQ', href: '/#faq' },
 ];
 
-const TEAM_LINKS = [{ name: 'Apply to join the team', href: APPLY_URL }];
+// const TEAM_LINKS = [{ name: 'Apply to join the team', href: APPLY_URL }];
 
 function LinkColumn({
   title,
@@ -67,9 +68,10 @@ function Footer(): React.JSX.Element {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-10 md:grid-cols-4">
+          {/* Back to md:grid-cols-4 when the "Get involved" column returns. */}
+          <div className="grid grid-cols-2 gap-10 md:grid-cols-3">
             <LinkColumn links={SITE_LINKS} title="This page" />
-            <LinkColumn links={TEAM_LINKS} title="Get involved" />
+            {/* <LinkColumn links={TEAM_LINKS} title="Get involved" /> */}
             <LinkColumn links={SOCIALS} title="Follow" />
             <LinkColumn
               links={[

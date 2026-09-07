@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOMClient from 'react-dom/client';
 import singleSpaReact from 'single-spa-react';
-import { APPLY_URL } from '../apply-link';
+// Applications are closed. Uncomment with the banner below when they reopen.
+// import { APPLY_URL } from '../apply-link';
 import { MobileMenu } from './mobile-menu';
 import { NAV_LINKS } from './nav-links';
 import './header.css';
@@ -42,6 +43,7 @@ function Header(): React.JSX.Element {
 
   return (
     <>
+      {/* Team applications banner. Uncomment when applications reopen.
       <div className="w-full border-b border-rule bg-slab">
         <div className="shell flex h-9 items-center justify-center gap-3 md:h-10">
           <span aria-hidden className="size-1.5 shrink-0 bg-primary" />
@@ -61,6 +63,7 @@ function Header(): React.JSX.Element {
           </a>
         </div>
       </div>
+      */}
 
       <header className={`chrome w-full${scrolled ? ' chrome--lifted' : ''}`}>
         <div className="shell flex h-[var(--nav-h)] items-center gap-8">
